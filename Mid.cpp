@@ -139,8 +139,10 @@ class Dish{
     }
     ~Dish(){
         show();
+        delete[] pork;
+        count--;
     }
-    void setPork(int a, Pork b){
+    void setPork(int a, Pork p){
         pork[a].setPrice(45);
         pork[a].setType(1);
         pork[a].Food::setType(1);
@@ -162,7 +164,7 @@ class Dish{
     int getNum(){
         return num;
     }
-    Rice getRice(){
+    Rice& getRice(){
         return rice;
     }
     static int checkCount(){
@@ -200,6 +202,10 @@ class Order{
         setDiscount(0);
     }
     ~Order(){
+        for(int i=0;i<num;i++){
+            delete dish[i];
+        }
+        delete[] dish;
         show();
     }
     void setDish(int a, Dish b){
@@ -227,6 +233,19 @@ class Order{
     }
     int getDiscount(){
         return discount;
+    }
+    double getPrice(){
+        double sum;
+        sum=0;
+        for(int i=0;i<num;i++){
+            Dish &temp=getDish(i);
+            for(int j=0;j<getDish(i).getNum();j++){
+                sum+=temp.getPork(j).getPrice();
+            }
+            sum+=temp.getRice().getPrice();
+        }
+        sum=sum*(discount/100);
+        return sum;
     }
     void show(){
         for(int i=0;i<num;i++){
