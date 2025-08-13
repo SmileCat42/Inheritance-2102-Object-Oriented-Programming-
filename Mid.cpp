@@ -18,7 +18,7 @@ class Food{
         setType(b);
     }
     ~Food(){
-        
+        show();
     }
     int setPrice(double  a){
         if(a<0){
@@ -61,6 +61,9 @@ class Pork:public Food{
     Pork(double a, int b, int c):Food(a,b){
         setType(c);
     }
+    ~Pork(){
+        show();
+    }
     int setType(int a){
         if(a<1 || a>4){
             cout << "pls set value from 1-4 " << endl;
@@ -96,6 +99,9 @@ class Rice:public Food{
     Rice(double a, int b, int c):Food(a,b){
         setType(c);
     }
+    ~Rice(){
+        show();
+    }
     int setType(int a){
         if(a<1 || a>3){
             cout << "pls set value from 1-3 " << endl;
@@ -122,14 +128,18 @@ class Dish{
     Pork *pork;
     int num;
     Rice rice;
+    static int count;
     public: 
     Dish(){
         setNum(1);
         rice.setPrice(20);
         rice.setType(1);
         rice.Food::setType(1);
+        count++;
     }
-    
+    ~Dish(){
+        show();
+    }
     void setPork(int a, Pork b){
         pork[a].setPrice(45);
         pork[a].setType(1);
@@ -155,6 +165,21 @@ class Dish{
     Rice getRice(){
         return rice;
     }
+    static int checkCount(){
+        if(count<=0){
+            cout << "Dont have dish now" << endl;
+            return 0;
+        }
+        cout << "Dishes : " << count << endl;
+    }
+    bool isPorkType(int type){
+        for(int i=0;i<num;i++){
+            if(pork[i].getType()==type){
+                return true;
+            }
+        }
+        return false;
+    }
     void show(){
         for(int i=0;i<num;i++){
             pork[i].show();
@@ -163,6 +188,7 @@ class Dish{
         rice.show();
     }
 };
+int Dish::count;
 
 class Order{
     Dish **dish;
@@ -172,6 +198,9 @@ class Order{
     Order(){
         setNum(0);
         setDiscount(0);
+    }
+    ~Order(){
+        show();
     }
     void setDish(int a, Dish b){
         *dish[a]=b;
