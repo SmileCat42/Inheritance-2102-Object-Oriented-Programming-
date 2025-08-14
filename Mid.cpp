@@ -10,12 +10,12 @@ class Food{
     int type;
     public :
     Food(){
-        setType(1);
+        setFoodType(1);
         setPrice(20);  
     }
     Food(double a, int b){
         setPrice(a);
-        setType(b);
+        setFoodType(b);
     }
     ~Food(){
         show();
@@ -26,13 +26,15 @@ class Food{
             return 0;
         }
         price=a;
+        return 1;
     }
-    int setType(int a){
+    int setFoodType(int a){
         if(a<1 || a>2){
             cout << "pls set value from 1-2 " << endl;
             return 0;
         }
         type=a;
+        return 1;
     }
     double getPrice(){
         return price;
@@ -55,7 +57,7 @@ class Pork:public Food{
     public:
     Pork(){
         setType(1);
-        Food::setType(1);
+        setFoodType(1);
         setPrice(45);
     }
     Pork(double a, int b, int c):Food(a,b){
@@ -70,6 +72,7 @@ class Pork:public Food{
             return 0;
         }
         type=a;
+        return 1;
     }
     int getType(){
         return type;
@@ -93,7 +96,7 @@ class Rice:public Food{
     public:
     Rice(){
         setType(3);
-        Food::setType(1);
+        setFoodType(1);
         setPrice(20);
     }
     Rice(double a, int b, int c):Food(a,b){
@@ -108,6 +111,7 @@ class Rice:public Food{
             return 0;
         }
         type=a;
+        return 1;
     }
     int getType(){
         return type;
@@ -134,7 +138,7 @@ class Dish{
         setNum(1);
         rice.setPrice(20);
         rice.setType(1);
-        rice.Food::setType(1);
+        rice.setFoodType(1);
         count++;
     }
     ~Dish(){
@@ -143,9 +147,7 @@ class Dish{
         count--;
     }
     void setPork(int a, Pork p){
-        pork[a].setPrice(45);
-        pork[a].setType(1);
-        pork[a].Food::setType(1);
+        pork[a]=p;
     }
     int setNum(int a){
         if(a<1){
@@ -154,9 +156,11 @@ class Dish{
         }
         num = a;
         pork = new Pork[num];
-        for(int i=0;i<num;i++){
-            setPork(i,pork[i]);
-        }
+        return 1;
+    }
+    void setRice(int a, int b){
+        rice.setType(b);
+        rice.setPrice(a);
     }
     Pork& getPork(int a){
         return pork[a];
@@ -173,6 +177,7 @@ class Dish{
             return 0;
         }
         cout << "Dishes : " << count << endl;
+        return 1;
     }
     bool isPorkType(int type){
         for(int i=0;i<num;i++){
@@ -202,13 +207,13 @@ class Order{
         setDiscount(0);
     }
     ~Order(){
+        show();
         for(int i=0;i<num;i++){
             delete dish[i];
         }
         delete[] dish;
-        show();
     }
-    void setDish(int a, Dish b){
+    void setDish(int a, Dish &b){
         *dish[a]=b;
     }
     int setNum(int a){
@@ -221,6 +226,7 @@ class Order{
         for(int i=0;i<num;i++){
             dish[i]=new Dish();
         }
+        return 1;
     }
     void setDiscount(int a){
         discount=a;
@@ -244,8 +250,15 @@ class Order{
             }
             sum+=temp.getRice().getPrice();
         }
-        sum=sum*(discount/100);
+        sum-=discount;
         return sum;
+    }
+    void checkMuYang(){
+        for(int i=0;i<num;i++){
+            if(dish[i]->isPorkType(2)==1){
+                cout << "Hello Mu Yang" << endl;
+            }
+        }
     }
     void show(){
         for(int i=0;i<num;i++){
@@ -257,6 +270,36 @@ class Order{
 };
 
 int main(){
-
+    Dish dish1;
+    Pork pork1(45,1,2);
+    Pork pork2(30,1,4);
+    dish1.setRice(15,3);
+    dish1.setNum(2);
+    dish1.setPork(0,pork1);
+    dish1.setPork(1,pork2);
+    Dish dish2;
+    Pork pork3(60,2,3);
+    dish2.setRice(25,2);
+    dish2.setNum(1);
+    dish2.setPork(0,pork3);
+    Order order1;
+    order1.setNum(2);
+    order1.setDish(0,dish1);
+    order1.setDish(1,dish2);
+    order1.setDiscount(50);
+    order1.show();
+    cout << "this order1 have " << order1.getNum() << " dishes" << endl;
+    cout << "order1 discount : " << order1.getDiscount() << " baht" << endl;
+    cout << "--------Order dish1-------------" << endl;
+    order1.getDish(0).getPork(0).show();
+    order1.getDish(0).getPork(1).show();
+    order1.getDish(0).getRice().show();
+    cout << order1.getDish(0).getNum() << endl;
+    cout << "--------Order dish2-------------" << endl;
+    order1.getDish(1).getPork(0).show();
+    order1.getDish(1).getRice().show();
+    cout << order1.getDish(1).getNum() << endl;
+    cout << "-----------checkMuYang order1-----------" << endl;
+    order1.checkMuYang();
 }
 
